@@ -1,55 +1,59 @@
-import iziToast from "izitoast";
-import "izitoast/dist/css/iziToast.min.css";
-import SimpleLightbox from "simplelightbox";
-import "simplelightbox/dist/simple-lightbox.min.css";
+import { keywords, loading, page, perPage, searchImg, seeMoreFunction, errorMessage, errorSeeMore } from './js/pixabay-api';
+import { gallery, lightbox, markUp, scroll } from "./js/render-functions";
 
-import { getPhotos } from "./js/pixabay-api.js";
-import {gallery, createMarkup} from "./js/render-functions.js"
+const formSearch = document.querySelector('.form-search');
+const showMoreBtn = document.querySelector('.btn-more');
 
-const form = document.querySelector('.search-form');
-const loader = document.querySelector('.loader');
+formSearch.addEventListener('submit', (event) => {
+    event.preventDefault();
+    gallery.innerHTML = '';
+    showMoreBtn.classList.add('visually-hidden');
+    
+    if (keywords.value) {
+        loading.classList.remove('visually-hidden');
 
-function textError() {
-    iziToast.error({
-    title: 'Error!',
-    message: 'Sorry, there are no images matching your search query. Please try again!',
-    })
-}
-
-const lightbox = new SimpleLightbox('.gallery a', {
-  captionsData: 'alt',
-  captionType: 'alt',
-  captionDelay: 200,
-  captionPosition: 'bottom',
+        searchImg()
+            .then(data => {
+                if (data.totalHits > 0) {
+                    if (data.totalHits > (page * perPage)) {
+                        showMoreBtn.classList.remove('visually-hidden');
+                    }; 
+                    return data.hits;
+                };
+            })
+            .then((images) => {
+                markUp(images);
+                lightbox.refresh();
+                scroll();
+            })
+            .catch(() => {
+                errorMessage();
+            })
+            .finally(() => {
+                formSearch.reset();
+            });
+    };
 });
 
-function showImages(event) {
-
+showMoreBtn.addEventListener('click', (event) => {
     event.preventDefault();
-    const query = event.target.elements.searchQuery.value;
-    
-    if (query) {
-        gallery.innerHTML = '';
-        loader.classList.remove('visually-hidden');
-        setTimeout(() => {
-            getPhotos(query)
-                .then((data) => {
-                    if (data.hits.length === 0) {
-                        form.reset();
-                        textError();
-                    } else {
-                        form.reset();
-                        createMarkup(data.hits);
-                        lightbox.refresh();
-                    }
-                })
-                .catch((error) => textError(error))
-                .finally(loader.classList.add('visually-hidden'));
-        }, 1000); 
 
-    } else {
-        textError();
-    }
-}
-
-form.addEventListener('submit', (event) => showImages(event));
+    seeMoreFunction()
+        .then((data) => {
+            if (data.totalHits < (page * perPage)) {
+                showMoreBtn.classList.add('visually-hidden'); 
+                loading.classList.add('visually-hidden'); 
+                errorSeeMore();
+            }
+            return data.hits;
+        })
+        .then((images) => {
+            markUp(images);
+            lightbox.refresh();
+            scroll();
+        })
+        .catch(() => {
+            showMoreBtn.classList.add('visually-hidden');
+            loading.classList.add('visually-hidden');
+        });
+});
