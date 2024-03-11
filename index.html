@@ -5,26 +5,35 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Image search</title>
+      <link rel="preconnect" href="https://fonts.googleapis.com" />
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+      <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet" />
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" />
     
-    <script type="module" crossorigin src="/goit-js-hw-12/commonHelpers.js"></script>
-    <link rel="modulepreload" crossorigin href="/goit-js-hw-12/assets/vendor-5b791d57.js">
-    <link rel="stylesheet" href="/goit-js-hw-12/assets/vendor-cf6910df.css">
-    <link rel="stylesheet" href="/goit-js-hw-12/assets/index-3830e023.css">
+    <script type="module" crossorigin src="/test1/commonHelpers.js"></script>
+    <link rel="modulepreload" crossorigin href="/test1/assets/vendor-527658dd.js">
+    <link rel="stylesheet" href="/test1/assets/vendor-cf6910df.css">
+    <link rel="stylesheet" href="/test1/assets/index-ecb0f72e.css">
   </head>
   <body>
     
-    <div class="container">
-      <form class="search-form" id="search-form">
-        <input type="text" name="searchQuery" autocomplete="off" placeholder="Search images..." autofocus />
-        <button type="submit">Search</button>
-      </form>
+  <section class="search">
+    <form class="form-search">
+      <label for="keywords">
+        <input class="keywords" type="text" id="keywords" placeholder="Search images..." />
+      </label>
+      <button class="btn btn-search" type="submit">Search</button>
+    </form>
+  </section>
+  <section class="gallery-wrap">
+    <ul class="gallery"></ul>
+    <button type="button" class="btn btn-more visually-hidden">
+      Load more
+    </button>
+    <div class="loading visually-hidden">
+      <span class="loader"></span>
     </div>
-    
-    <div class="loader visually-hidden"></div>
-
-    <div class="gallery">
-      <!-- Cards -->
-    </div>
+  </section>
 
     
   </body>
